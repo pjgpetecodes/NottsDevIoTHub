@@ -50,7 +50,7 @@ wpi.pullUpDnControl(config.ButtonPin, wpi.PUD_UP);
 //
 // Setup the IoT Hub Connection
 //
-var connectionString = 'HostName=NottsDevIoTHub.azure-devices.net;DeviceId=NottsDevIoTDevice1;SharedAccessKey=' + security.SharedAccessKey;
+var connectionString = 'HostName=' + config.HostName + ';DeviceId=' + config.DeviceId + ';SharedAccessKey=' + security.SharedAccessKey;
 
 // use factory function from AMQP-specific package
 var clientFromConnectionString = require('azure-iot-device-amqp').clientFromConnectionString;

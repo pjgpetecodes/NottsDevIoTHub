@@ -108,6 +108,25 @@ var connectCallback = function (err) {
 
     });
 
+    function onGetReadings(request, response) {
+      console.log(request.payload);
+  
+      blinkLED(config.LEDPin1);
+      blinkLED(config.LEDPin2);
+      
+      var sensorData = raspberry.getSensorData();
+    
+      response.send(200, 'Temperature = ' + sensorData.temperature + " Humidity = " + sensorData.humidity, function(err) {
+          if(err) {
+              console.error('An error ocurred when sending a method response:\n' + err.toString());
+          } else {
+              console.log('Response to method \'' + request.methodName + '\' sent successfully.' );
+          }
+      });
+    }
+  
+    client.onDeviceMethod('getReadings', onGetReadings);
+
     wpi.wiringPiISR(config.ButtonPin, wpi.INT_EDGE_FALLING, function(delta) {
       console.log('Pin ' + config.ButtonPin + ' changed to LOW (', delta, ')');
 

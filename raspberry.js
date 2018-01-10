@@ -1,6 +1,17 @@
 // We consider it a valid firmware if this line exists.
 'use strict';
 
+var path = require('path');
+
+//
+// Load the Config File
+//
+try {
+  var config = require( path.resolve( __dirname, "./config.json" ) );
+} catch (err) {
+  console.error('Failed to load config files: ' + err.message);
+  return;
+}
 
 var CONFIG_LEDPIN = 7; // Define led pin
 
@@ -45,15 +56,25 @@ function generateRandomIncrement() {
 
 raspberry.getSensorData = function() {
   var sensorJson;
-  try {
-    var data = bme.readSensorData();
-    sensorJson = JSON.stringify(
-        {'temperature': data.temperature_C, 'humidity': data.humidity});
-  } catch (error) {
-    // Generate a default number if hardware error.
-    sensorJson = '{"Temperature":' + generateRandomIncrement() +
-        ',"Humidity":' + generateRandomIncrement() + '}';
+
+  if (config.BME280Type == 1)
+  {
+    try {
+      var data = bme.readSensorData();
+      sensorJson = JSON.stringify(
+          {'temperature': data.temperature_C, 'humidity': data.humidity});
+    } catch (error) {
+      // Generate a default number if hardware error.
+      sensorJson = '{"temperature":' + generateRandomIncrement() +
+          ',"humidity":' + generateRandomIncrement() + '}';
+    }
   }
+  else
+  {
+    sensorJson = '{"temperature":' + generateRandomIncrement() +
+        ',"humidity":' + generateRandomIncrement() + '}';
+  }
+
   return JSON.parse(sensorJson);
 };
 

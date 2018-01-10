@@ -3,5 +3,6 @@
     "DeviceId": "NottsDevIoTDevice1",
     "LEDPin1": 16,
     "LEDPin2": 0,
-    "ButtonPin": 11
+    "ButtonPin": 11,
+    "BME280Type": 1
   }

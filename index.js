@@ -33,6 +33,7 @@ var connectCallback = function (err) {
   } else {
 
     console.log('Client connected');
+  }
 
 }; // var connectCallback
 

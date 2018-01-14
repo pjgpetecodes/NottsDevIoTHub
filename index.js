@@ -37,6 +37,9 @@ var connectCallback = function (err) {
 
 }; // var connectCallback
 
+// Open the connection to our IoT Hub and supply our Callback function for when it's connected
+client.open(connectCallback);
+
 while (true)
 {
 

@@ -49,9 +49,34 @@ var connectCallback = function (err) {
   if (err) {
     console.error('Could not connect: ' + err);
   } else {
-
     console.log('Client connected');
   }
+
+  client.on('message', function (msg) {
+    client.complete(msg, printResultFor('completed'));
+
+    console.log("\x1b[0m",'Command = ' + msg.data);
+    
+    switch (msg.data.toString())
+    {
+
+      case 'RedLED':
+
+        console.log("\x1b[31m",'FLash Red LED');
+        blinkLED(config.RedLED);
+        break;
+
+      case 'GreenLED':
+
+        console.log("\x1b[32m",'Flash Green LED');
+        blinkLED(config.GreenLED);
+        break;     
+
+    }
+
+    console.log("\x1b[0m", '------------------');
+
+  });
 
   wpi.wiringPiISR(config.ButtonPin, wpi.INT_EDGE_FALLING, function(delta) {
     

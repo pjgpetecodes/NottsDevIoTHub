@@ -26,6 +26,16 @@ wpi.setup('wpi');
 wpi.pinMode(config.RedLED, wpi.OUTPUT);
 wpi.pinMode(config.GreenLED, wpi.OUTPUT);
 
+// Setup a Callback for when we're connected to our IoT Hub instance
+var connectCallback = function (err) {
+  if (err) {
+    console.error('Could not connect: ' + err);
+  } else {
+
+    console.log('Client connected');
+
+}; // var connectCallback
+
 while (true)
 {
 

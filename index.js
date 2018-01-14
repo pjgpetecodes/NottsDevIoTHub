@@ -93,7 +93,16 @@ var connectCallback = function (err) {
     var sensorData = raspberry.getSensorData();
     
     var msg = new Message('Temperature = ' + sensorData.temperature + " Humidity = " + sensorData.humidity + " Button = " + wpi.digitalRead(config.ButtonPin));
-      
+    
+    if (sensorData.temperature > 26) 
+    {
+      msg.properties.add('level', 'critical');
+    }
+    else
+    {
+      msg.properties.add('level', 'normal');
+    }
+
     response.send(200, msg, function(err) {
         if(err) {
             console.error('An error ocurred when sending a method response:\n' + err.toString());

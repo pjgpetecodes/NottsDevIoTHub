@@ -52,6 +52,9 @@ var connectCallback = function (err) {
     console.log('Client connected');
   }
 
+  // Import the 
+  var raspberry = require('./raspberry');    
+  
   client.on('message', function (msg) {
     client.complete(msg);
 

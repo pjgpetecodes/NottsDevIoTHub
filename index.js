@@ -1,5 +1,17 @@
 'use strict';
 
+var path = require('path');
+
+//
+// Load the Config Files
+//
+try {
+  var config = require( path.resolve( __dirname, "./config.json" ) );
+} catch (err) {
+  console.error('Failed to load config files: ' + err.message);
+  return;
+}
+
 //
 // Setup the IO
 //

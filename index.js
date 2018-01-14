@@ -50,6 +50,16 @@ var connectCallback = function (err) {
     console.log('Client connected');
   }
 
+  var msg = new Message('Test');
+
+  response.send(200, msg, function(err) {
+      if(err) {
+          console.error('An error ocurred when sending a method response:\n' + err.toString());
+      } else {
+          console.log('Response to method \'' + request.methodName + '\' sent successfully.' );
+      }
+  });
+
   while (true)
   { 
 

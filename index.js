@@ -78,6 +78,28 @@ var connectCallback = function (err) {
 
   });
 
+  //
+  // the IoT Hub has requested some readings
+  //
+  function onGetReadings(request, response) {
+    console.log(request.payload);
+
+    blinkLED(config.RedLED);
+    blinkLED(config.GreenLED);
+    
+    var msg = new Message('Some readings');
+      
+    response.send(200, msg, function(err) {
+        if(err) {
+            console.error('An error ocurred when sending a method response:\n' + err.toString());
+        } else {
+            console.log('Response to method \'' + request.methodName + '\' sent successfully.' );
+        }
+    });
+  }
+
+  client.onDeviceMethod('getReadings', onGetReadings);
+
   wpi.wiringPiISR(config.ButtonPin, wpi.INT_EDGE_FALLING, function(delta) {
     
     var interrupt_time = wpi.millis();

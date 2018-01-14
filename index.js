@@ -50,23 +50,24 @@ var connectCallback = function (err) {
     console.log('Client connected');
   }
 
+  while (true)
+  { 
+
+    if (wpi.digitalRead(config.ButtonPin) == 1)
+    {
+      wpi.digitalWrite(config.RedLED, 0);
+      wpi.digitalWrite(config.GreenLED, 0);
+    }
+    else
+    {
+      wpi.digitalWrite(config.RedLED, 1);
+      wpi.digitalWrite(config.GreenLED, 1);
+    }
+
+  }
+
 }; // var connectCallback
 
 // Open the connection to our IoT Hub and supply our Callback function for when it's connected
 client.open(connectCallback);
 
-while (true)
-{
-
-  if (wpi.digitalRead(config.ButtonPin) == 1)
-  {
-    wpi.digitalWrite(config.RedLED, 0);
-    wpi.digitalWrite(config.GreenLED, 0);
-  }
-  else
-  {
-    wpi.digitalWrite(config.RedLED, 1);
-    wpi.digitalWrite(config.GreenLED, 1);
-  }
-
-}

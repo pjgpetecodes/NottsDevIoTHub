@@ -87,7 +87,9 @@ var connectCallback = function (err) {
     blinkLED(config.RedLED);
     blinkLED(config.GreenLED);
     
-    var msg = new Message('Some readings');
+    var sensorData = raspberry.getSensorData();
+    
+    var msg = new Message('Temperature = ' + sensorData.temperature + " Humidity = " + sensorData.humidity + " Button = " + wpi.digitalRead(config.ButtonPin));
       
     response.send(200, msg, function(err) {
         if(err) {

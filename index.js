@@ -54,11 +54,8 @@ var connectCallback = function (err) {
   }
 
   wpi.wiringPiISR(config.ButtonPin, wpi.INT_EDGE_FALLING, function(delta) {
-    console.log('Pin ' + config.ButtonPin + ' changed to LOW (', delta, ')');
-
+    
     var interrupt_time = wpi.millis();
-
-    console.log(interrupt_time - last_interrupt_time);
 
     // If interrupts come faster than 200ms, assume it's a bounce and ignore
     if (interrupt_time - last_interrupt_time > 200) 

@@ -28,15 +28,15 @@ const wpi = require('wiring-pi');
 wpi.setup('wpi');
 
 // Setup our LED Pin
-wpi.pinMode(config.LEDPin1, wpi.OUTPUT);
-wpi.pinMode(config.LEDPin2, wpi.OUTPUT);
+wpi.pinMode(config.RedLED, wpi.OUTPUT);
+wpi.pinMode(config.GreenLED, wpi.OUTPUT);
 
-wpi.digitalWrite(config.LEDPin1, 0);
-wpi.digitalWrite(config.LEDPin2, 0);
+wpi.digitalWrite(config.RedLED, 0);
+wpi.digitalWrite(config.GreenLED, 0);
 
 // Blink our LEDs for good measure
-blinkLED(config.LEDPin1);
-blinkLED(config.LEDPin2);
+blinkLED(config.RedLED);
+blinkLED(config.GreenLED);
 
 // This is the pin for our button
 wpi.pinMode(config.ButtonPin, wpi.INPUT);
@@ -80,43 +80,57 @@ var connectCallback = function (err) {
     // Import the 
     var raspberry = require('./raspberry');    
     
-    blinkLED(config.LEDPin1);
-    blinkLED(config.LEDPin2);
+    blinkLED(config.RedLED);
+    blinkLED(config.GreenLED);
 
     console.log('Client connected');
     
     client.on('message', function (msg) {
       client.complete(msg, printResultFor('completed'));
  
-      console.log("\x1b[31m",'Command = ' + msg.data);
-      console.log("\x1b[0m", '------------------');
-
+      console.log("\x1b[0m",'Command = ' + msg.data);
+      
       switch (msg.data.toString())
       {
 
-        case 'LED1':
+        case 'RedLED':
 
-          blinkLED(config.LEDPin1);
+          console.log("\x1b[31m",'FLash Red LED');
+          blinkLED(config.RedLED);
           break;
 
-        case 'LED2':
+        case 'GreenLED':
 
-          blinkLED(config.LEDPin2);
+          console.log("\x1b[32m",'Flash Green LED');
+          blinkLED(config.GreenLED);
           break;     
 
       }
+
+      console.log("\x1b[0m", '------------------');
 
     });
 
     function onGetReadings(request, response) {
       console.log(request.payload);
   
-      blinkLED(config.LEDPin1);
-      blinkLED(config.LEDPin2);
+      blinkLED(config.RedLED);
+      blinkLED(config.GreenLED);
       
       var sensorData = raspberry.getSensorData();
     
-      response.send(200, 'Temperature = ' + sensorData.temperature + " Humidity = " + sensorData.humidity, function(err) {
+      var msg = new Message('Temperature = ' + sensorData.temperature + " Humidity = " + sensorData.humidity + " Button = " + wpi.digitalRead(config.ButtonPin));
+        
+      if (sensorData.temperature > 26) 
+      {
+        msg.properties.add('level', 'critical');
+      }
+      else
+      {
+        msg.properties.add('level', 'normal');
+      }
+
+      response.send(200, msg, function(err) {
           if(err) {
               console.error('An error ocurred when sending a method response:\n' + err.toString());
           } else {
@@ -141,7 +155,14 @@ var connectCallback = function (err) {
     
         var msg = new Message('Temperature = ' + sensorData.temperature + " Humidity = " + sensorData.humidity + " Button = " + wpi.digitalRead(11));
         
-        msg.properties.add('severity', 'high');
+        if (sensorData.temperature > 26) 
+        {
+          msg.properties.add('level', 'critical');
+        }
+        else
+        {
+          msg.properties.add('level', 'normal');
+        }
 
         client.sendEvent(msg, function (err) {
           if (err) {

@@ -26,6 +26,20 @@ wpi.setup('wpi');
 wpi.pinMode(config.RedLED, wpi.OUTPUT);
 wpi.pinMode(config.GreenLED, wpi.OUTPUT);
 
+//
+// Setup the IoT Hub Connection
+//
+var connectionString = 'HostName=' + config.HostName + ';DeviceId=' + config.DeviceId + ';SharedAccessKey=' + security.SharedAccessKey;
+
+// use factory function from AMQP-specific package
+var clientFromConnectionString = require('azure-iot-device-amqp').clientFromConnectionString;
+
+// AMQP-specific factory function returns Client object from core package
+var client = clientFromConnectionString(connectionString);
+
+// use Message object from core package
+var Message = require('azure-iot-device').Message;
+
 // Setup a Callback for when we're connected to our IoT Hub instance
 var connectCallback = function (err) {
   if (err) {

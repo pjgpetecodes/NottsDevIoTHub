@@ -7,6 +7,7 @@ var path = require('path');
 //
 try {
   var config = require( path.resolve( __dirname, "./config.json" ) );
+  var security = require( path.resolve( __dirname, "./security.json" ) );
 } catch (err) {
   console.error('Failed to load config files: ' + err.message);
   return;

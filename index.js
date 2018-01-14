@@ -26,16 +26,18 @@ wpi.setup('wpi');
 wpi.pinMode(config.RedLED, wpi.OUTPUT);
 wpi.pinMode(config.GreenLED, wpi.OUTPUT);
 
-for (var i = 1; i < 10; i++)
+while (true)
 {
-  wpi.digitalWrite(config.RedLED, 1);
-  wpi.digitalWrite(config.GreenLED, 1);
 
-  wpi.delay(500);
-
-  wpi.digitalWrite(config.RedLED, 0);
-  wpi.digitalWrite(config.GreenLED, 0);
-
-  wpi.delay(500);
+  if (wpi.digitalRead(config.ButtonPin) == 1)
+  {
+    wpi.digitalWrite(config.RedLED, 0);
+    wpi.digitalWrite(config.GreenLED, 0);
+  }
+  else
+  {
+    wpi.digitalWrite(config.RedLED, 1);
+    wpi.digitalWrite(config.GreenLED, 1);
+  }
 
 }

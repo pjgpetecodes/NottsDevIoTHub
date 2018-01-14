@@ -110,3 +110,14 @@ var connectCallback = function (err) {
 
 // Open the connection to our IoT Hub and supply our Callback function for when it's connected
 client.open(connectCallback);
+
+//
+// Blink the given LED
+//
+function blinkLED(PinToBlink) {
+  // Light up LED for 500 ms
+  wpi.digitalWrite(PinToBlink, 1);
+  setTimeout(function () {
+    wpi.digitalWrite(PinToBlink, 0);
+  }, 500);
+}

@@ -53,7 +53,7 @@ var connectCallback = function (err) {
   }
 
   client.on('message', function (msg) {
-    client.complete(msg, printResultFor('completed'));
+    client.complete(msg);
 
     console.log("\x1b[0m",'Command = ' + msg.data);
     

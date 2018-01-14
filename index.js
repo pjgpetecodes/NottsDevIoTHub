@@ -41,6 +41,9 @@ var client = clientFromConnectionString(connectionString);
 // use Message object from core package
 var Message = require('azure-iot-device').Message;
 
+// Setup our button Debounce Timer
+var last_interrupt_time = 0;
+
 // Setup a Callback for when we're connected to our IoT Hub instance
 var connectCallback = function (err) {
   if (err) {
@@ -50,22 +53,38 @@ var connectCallback = function (err) {
     console.log('Client connected');
   }
 
-  //
-  // Send a Test Message
-  //
-  var msg = new Message('Test Msg');
-        
-  client.sendEvent(msg, function (err) {
-    if (err) {
-      console.log(err.toString());
-    } else {
-      console.log('Message sent');
-    };
+  wpi.wiringPiISR(config.ButtonPin, wpi.INT_EDGE_FALLING, function(delta) {
+    console.log('Pin ' + config.ButtonPin + ' changed to LOW (', delta, ')');
 
-  }); // Client.sendEvent
+    var interrupt_time = wpi.millis();
+
+    console.log(interrupt_time - last_interrupt_time);
+
+    // If interrupts come faster than 200ms, assume it's a bounce and ignore
+    if (interrupt_time - last_interrupt_time > 200) 
+    {
+      
+      //
+      // Send a Test Message
+      //
+      var msg = new Message('Test Msg');
+            
+      client.sendEvent(msg, function (err) {
+        if (err) {
+          console.log(err.toString());
+        } else {
+          console.log('Message sent');
+        };
+
+      }); // Client.sendEvent
+
+      last_interrupt_time = interrupt_time;
+
+    }; // if (interrupt...)
+
+  });  
 
 }; // var connectCallback
 
 // Open the connection to our IoT Hub and supply our Callback function for when it's connected
 client.open(connectCallback);
-

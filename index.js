@@ -122,19 +122,29 @@ var connectCallback = function (err) {
     if (interrupt_time - last_interrupt_time > 200) 
     {
       
-      //
-      // Send a Test Message
-      //
-      var msg = new Message('Test Msg');
-            
+      var sensorData = raspberry.getSensorData();
+    
+      var msg = new Message('Temperature = ' + sensorData.temperature + " Humidity = " + sensorData.humidity + " Button = " + wpi.digitalRead(11));
+      
+      if (sensorData.temperature > 26) 
+      {
+        msg.properties.add('level', 'critical');
+      }
+      else
+      {
+        msg.properties.add('level', 'normal');
+      }
+
       client.sendEvent(msg, function (err) {
         if (err) {
           console.log(err.toString());
         } else {
           console.log('Message sent');
+          //process.exit()
         };
 
       }); // Client.sendEvent
+  
 
       last_interrupt_time = interrupt_time;
 

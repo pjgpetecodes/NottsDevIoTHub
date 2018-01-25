@@ -11,6 +11,7 @@
   "dependencies": {
     "wiring-pi": ">=2.1.1",
 		"shelljs": "^0.7.7",
+    "azure-sb": "^0.10.5",
     "azure-iot-device": "^1.2.2",
     "azure-iot-device-amqp": "^1.2.3"
   }

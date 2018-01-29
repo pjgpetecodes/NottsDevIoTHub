@@ -16,7 +16,12 @@ var printMessage = function (message) {
     console.log('Message received: ');
     
     console.log(messageString);
-    console.log(message.applicationProperties.level);
+
+    if (message.applicationProperties)
+    {
+        console.log('Temperature Level = ' + message.applicationProperties.level);
+    }
+    
     console.log('');
   };
 

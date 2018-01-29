@@ -28,7 +28,7 @@ function printResultFor(op) {
     } else {
       console.log('Service client connected');
       serviceClient.getFeedbackReceiver(receiveFeedback);
-      var message = new Message('RedLED');
+      var message = new Message('Hello Device');
       message.ack = 'full';
       message.messageId = "My Message ID";
       console.log('Sending message: ' + message.getData());

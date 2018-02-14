@@ -44,6 +44,45 @@ var Message = require('azure-iot-device').Message;
 // Setup our button Debounce Timer
 var last_interrupt_time = 0;
 
+var initConfigChange = function(twin) {
+  var currentTelemetryConfig = twin.properties.reported.telemetryConfig;
+  currentTelemetryConfig.pendingConfig = twin.properties.desired.telemetryConfig;
+  currentTelemetryConfig.status = "Pending";
+
+  var patch = {
+  telemetryConfig: currentTelemetryConfig
+  };
+  twin.properties.reported.update(patch, function(err) {
+      if (err) {
+          console.log('Could not report properties');
+      } else {
+          console.log('Reported pending config change: ' + JSON.stringify(patch));
+          setTimeout(function() {completeConfigChange(twin);}, 60000);
+      }
+  });
+}
+
+var completeConfigChange =  function(twin) {
+  var currentTelemetryConfig = twin.properties.reported.telemetryConfig;
+  currentTelemetryConfig.configId = currentTelemetryConfig.pendingConfig.configId;
+  currentTelemetryConfig.sendFrequency = currentTelemetryConfig.pendingConfig.sendFrequency;
+  currentTelemetryConfig.status = "Success";
+  delete currentTelemetryConfig.pendingConfig;
+
+  var patch = {
+      telemetryConfig: currentTelemetryConfig
+  };
+  patch.telemetryConfig.pendingConfig = null;
+
+  twin.properties.reported.update(patch, function(err) {
+      if (err) {
+          console.error('Error reporting properties: ' + err);
+      } else {
+          console.log('Reported completed config change: ' + JSON.stringify(patch));
+      }
+  });
+};
+
 // Setup a Callback for when we're connected to our IoT Hub instance
 var connectCallback = function (err) {
   if (err) {
@@ -52,9 +91,42 @@ var connectCallback = function (err) {
     console.log('Client connected');
   }
 
-  // Import the 
+  // Import the BME280 Controller
   var raspberry = require('./raspberry');    
   
+  // Import the Microbit Controller
+  var microbit = require('./microbit');    
+  
+  client.getTwin(function(err, twin) {
+    if (err) {
+        console.error('could not get twin');
+    } else {
+        /* var patch = {
+            location: 'home'
+        };
+
+        twin.properties.reported.update(patch, function(err) {
+            if (err) {
+                console.error('could not update twin');
+            } else {
+                console.log('twin state reported');                
+            }
+        }); */
+
+      twin.properties.reported.telemetryConfig = {
+          configId: "0",
+          sendFrequency: "24h"
+      }
+      twin.on('properties.desired', function(desiredChange) {
+          console.log("received change: "+JSON.stringify(desiredChange));
+          var currentTelemetryConfig = twin.properties.reported.telemetryConfig;
+          if (desiredChange.telemetryConfig && desiredChange.telemetryConfig.configId !== currentTelemetryConfig.configId) {
+              initConfigChange(twin);
+          }
+      });
+    }
+    });
+
   client.on('message', function (msg) {
     client.complete(msg);
 
@@ -90,11 +162,13 @@ var connectCallback = function (err) {
     blinkLED(config.RedLED);
     blinkLED(config.GreenLED);
     
-    var sensorData = raspberry.getSensorData();
+    //var sensorData = raspberry.getSensorData();
+    var sensorData = microbit.getSensorData();
     
-    var msg = new Message('Temperature = ' + sensorData.temperature + " Humidity = " + sensorData.humidity + " Button = " + wpi.digitalRead(config.ButtonPin));
-    
-    if (sensorData.temperature > 26) 
+    //var msg = new Message('Temperature = ' + sensorData.temperature + " Humidity = " + sensorData.humidity + " Button = " + wpi.digitalRead(11));
+    var msg = new Message('Light Level = ' + sensorData.lightlevel + " Compass = " + sensorData.compass + " Acceleration = " + sensorData.acceleration + " Temperature = " + sensorData.temperature);
+
+    if (sensorData.temperature > 25) 
     {
       msg.properties.add('level', 'critical');
     }
@@ -122,11 +196,13 @@ var connectCallback = function (err) {
     if (interrupt_time - last_interrupt_time > 200) 
     {
       
-      var sensorData = raspberry.getSensorData();
+      //var sensorData = raspberry.getSensorData();
+      var sensorData = microbit.getSensorData();
     
-      var msg = new Message('Temperature = ' + sensorData.temperature + " Humidity = " + sensorData.humidity + " Button = " + wpi.digitalRead(11));
-      
-      if (sensorData.temperature > 26) 
+      //var msg = new Message('Temperature = ' + sensorData.temperature + " Humidity = " + sensorData.humidity + " Button = " + wpi.digitalRead(11));
+      var msg = new Message('Light Level = ' + sensorData.lightlevel + " Compass = " + sensorData.compass + " Acceleration = " + sensorData.acceleration + " Temperature = " + sensorData.temperature);
+
+      if (sensorData.temperature > 25) 
       {
         msg.properties.add('level', 'critical');
       }

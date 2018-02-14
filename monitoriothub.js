@@ -2,7 +2,7 @@
 
 var EventHubClient = require('azure-event-hubs').Client;
 
-var connectionString = '';
+var connectionString = 'HostName=NottsDevIoTHub1.azure-devices.net;SharedAccessKeyName=DeviceExplorer;SharedAccessKey=+XJBxl+/tuiJ3lxe0xW0Uq1xL4yapz1IhmRMNokVPd4=';
 
 var printError = function (err) {
     console.log(err.message);

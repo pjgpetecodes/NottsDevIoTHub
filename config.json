@@ -1,6 +1,6 @@
 {
-    "HostName" : "NottsDevIoTHub.azure-devices.net",
-    "DeviceId": "NottsDevIoTDevice1",
+    "HostName" : "NottsDevIoTHub1.azure-devices.net",
+    "DeviceId": "NottsDevIoTDevice",
     "RedLED": 16,
     "GreenLED": 0,
     "ButtonPin": 11,

@@ -2,8 +2,8 @@
 
 var azure = require('azure-sb');
 
-var connectionString = '';
-var queueName = '';
+var connectionString = 'Endpoint=sb://nottsdevsb.servicebus.windows.net/;SharedAccessKeyName=criticalqueuereader;SharedAccessKey=NcH5dtTyfkqI7IdmpCzPqLvaNmkwPeoWSK6J51BRvAo=';
+var queueName = 'criticalqueue';
 
 var serviceBusService = azure.createServiceBusService(connectionString);
 

@@ -51,7 +51,7 @@ raspberry.lightBlink = function() {
 
 
 function generateRandomIncrement() {
-  return ((Math.random() * 2) - 1);
+  return ((Math.random() * 14) + 20);
 }
 
 raspberry.getSensorData = function() {

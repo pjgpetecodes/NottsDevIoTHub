@@ -1,12 +1,10 @@
 'use strict';
 
+var gpio = require('rpi-gpio');
+
 //
 // Setup the IO
 //
+SetupGPIO();
 
-// Include Wiring Pi for our IO
-const wpi = require('wiring-pi');
-
-// Setup the Wiring Pi System
-wpi.setup('wpi');
 

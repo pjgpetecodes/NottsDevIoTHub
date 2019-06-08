@@ -1,6 +1,6 @@
 'use strict';
 
-var gpio = require('rpi-gpio');
+const wpi = require('wiring-pi');
 
 //
 // Setup the IO
